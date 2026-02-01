@@ -134,7 +134,7 @@ export default function Hero() {
                 <span className="text-2xl">✨</span>
                 <div>
                   <div className="text-sm font-medium text-[--color-ink]">
-                    It's mutual!
+                    It&apos;s mutual!
                   </div>
                   <div className="text-xs text-[--color-ink-muted]">
                     Start your conversation
