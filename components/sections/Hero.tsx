@@ -3,217 +3,146 @@
 import Container from "@/components/ui/Container";
 import Button from "@/components/ui/Button";
 import Badge from "@/components/ui/Badge";
-import Card from "@/components/ui/Card";
+import PhoneMockup, { BloomAppScreen } from "@/components/ui/PhoneMockup";
 import {
   motion,
   Reveal,
   fadeUp,
   fadeIn,
-  stagger,
+  StaggerContainer,
 } from "@/components/ui/Motion";
 
-const floating = {
-  hidden: { opacity: 0, y: 10 },
-  show: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: 0.2 + i * 0.08, duration: 0.6, ease: "easeOut" },
-  }),
-};
-
 export default function Hero() {
-  const chips = [
-    "Interview prep",
-    "Career pivots",
-    "Product",
-    "Cybersecurity",
-    "Remote-first",
-    "Weekly check-ins",
-    "Resume review",
-  ];
-
   return (
-    <section id="top" className="relative overflow-hidden">
-      <div className="absolute inset-0 bg-bloom" />
-      <div className="absolute inset-0 bg-grid opacity-15" />
-      <div className="absolute inset-0 noise pointer-events-none" />
+    <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden">
+      {/* Background decorations */}
+      <div className="absolute inset-0 -z-10">
+        {/* Soft gradient blobs */}
+        <div
+          className="
+            absolute top-20 left-1/4 w-[600px] h-[600px]
+            bg-[--color-bloom-soft]/20 rounded-full blur-[120px]
+            animate-pulse-soft
+          "
+        />
+        <div
+          className="
+            absolute bottom-0 right-1/4 w-[500px] h-[500px]
+            bg-[--color-violet-soft]/15 rounded-full blur-[100px]
+            animate-pulse-soft delay-200
+          "
+        />
 
-      {/* glow blobs */}
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-pink-500/30 glow" />
-      <div className="pointer-events-none absolute top-20 right-[-140px] h-[460px] w-[460px] rounded-full bg-violet-500/26 glow" />
-      <div className="pointer-events-none absolute bottom-[-160px] left-[-140px] h-[460px] w-[460px] rounded-full bg-cyan-500/10 glow" />
+        {/* Subtle dot pattern */}
+        <div className="absolute inset-0 pattern-dots opacity-40" />
+      </div>
 
-      <Container className="relative pt-14 pb-10 md:pt-20 md:pb-16">
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:items-center">
-          {/* Left: Hinge-like big copy + playful badges */}
-          <motion.div variants={stagger} initial="hidden" animate="show">
-            <motion.div variants={fadeUp} className="flex flex-wrap gap-2">
-              <Badge variant="pink">Bloom</Badge>
-              <Badge>Mutual opt-in</Badge>
-              <Badge variant="violet">Match by relevance</Badge>
-              <Badge variant="green">Verified</Badge>
-            </motion.div>
+      <Container>
+        {/* Top badge / kicker */}
+        <Reveal variant={fadeUp} className="flex justify-center mb-8">
+          <Badge variant="bloom" className="gap-2">
+            <svg className="w-3 h-3" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L14.09 8.26L21 9.27L16 14.14L17.18 21.02L12 17.77L6.82 21.02L8 14.14L3 9.27L9.91 8.26L12 2Z" />
+            </svg>
+            The official mentorship matching app
+          </Badge>
+        </Reveal>
 
-            <motion.h1
-              variants={fadeUp}
-              className="mt-5 text-4xl font-semibold tracking-tight md:text-6xl"
-            >
-              Mentorship, but it actually{" "}
-              <span className="bg-gradient-to-r from-pink-400 to-violet-300 bg-clip-text text-transparent">
-                happens.
-              </span>
+        {/* Main content grid */}
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: Copy */}
+          <StaggerContainer className="text-center lg:text-left">
+            <motion.h1 variants={fadeUp} className="h1 text-[--color-ink]">
+              <em>Tiny connections,</em> remarkable careers.
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
-              className="mt-4 max-w-xl text-white/75 md:text-lg"
+              className="lead mt-6 max-w-xl mx-auto lg:mx-0"
             >
-              Bloom helps mentors and mentees connect through{" "}
-              <span className="text-white/90">mutual opt-in</span>, structured
-              prompts, and <span className="text-white/90">verification</span> —
-              so you don’t have to cold message strangers and hope for a reply.
+              Based on the proven principles of mutual opt-in and structured
+              connection, Bloom is a mentorship app like no other.
             </motion.p>
 
+            {/* App store buttons placeholder */}
             <motion.div
               variants={fadeUp}
-              className="mt-7 flex flex-wrap items-center gap-3"
+              className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
-              <Button href="#join">Join waitlist</Button>
-              <Button variant="secondary" href="#story">
-                See the flow
+              <Button href="#join" size="large">
+                Join the waitlist
               </Button>
-              <Button variant="ghost" href="#trust">
-                Trust & safety
+              <Button href="#how-it-works" variant="outline" size="large">
+                See how it works
               </Button>
             </motion.div>
 
+            {/* Trust indicators */}
             <motion.div
               variants={fadeUp}
-              className="mt-8 flex flex-wrap gap-2 text-xs text-white/60"
+              className="mt-10 flex flex-wrap gap-3 justify-center lg:justify-start"
             >
-              <span className="rounded-full bg-white/5 px-3 py-1 ring-1 ring-white/10">
-                No age displayed
-              </span>
-              <span className="rounded-full bg-white/5 px-3 py-1 ring-1 ring-white/10">
-                Remote-first
-              </span>
-              <span className="rounded-full bg-white/5 px-3 py-1 ring-1 ring-white/10">
-                Warm-professional vibe
-              </span>
+              <Badge variant="outline">Mutual opt-in</Badge>
+              <Badge variant="outline">LinkedIn verified</Badge>
+              <Badge variant="outline">Remote-first</Badge>
             </motion.div>
-          </motion.div>
+          </StaggerContainer>
 
-          {/* Right: Phone mock + floating chips (Hinge energy) */}
-          <Reveal variant={fadeIn} className="relative">
-            <div className="absolute -inset-4 rounded-[28px] opacity-40 border-sheen" />
+          {/* Right: Phone mockup */}
+          <div className="relative flex justify-center lg:justify-end">
+            <PhoneMockup className="relative z-10">
+              <BloomAppScreen />
+            </PhoneMockup>
 
+            {/* Floating elements around phone */}
             <motion.div
-              initial={{ opacity: 0, y: 18, rotate: -1 }}
-              animate={{ opacity: 1, y: 0, rotate: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative mx-auto max-w-md"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+              className="
+                absolute left-0 top-1/4 hidden lg:block
+                bg-white rounded-2xl shadow-lg border border-[--color-border]
+                px-4 py-3
+              "
             >
-              <Card className="overflow-hidden rounded-[28px]">
-                <div className="p-5">
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm font-semibold">Bloom</div>
-                    <div className="flex items-center gap-2">
-                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-white/70 ring-1 ring-white/10">
-                        Verified
-                      </span>
-                      <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-white/70 ring-1 ring-white/10">
-                        +3h
-                      </span>
-                    </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-[--color-sage-soft]" />
+                <div>
+                  <div className="text-sm font-medium text-[--color-ink]">
+                    New match!
                   </div>
-
-                  <div className="mt-4 h-44 w-full rounded-2xl bg-gradient-to-br from-white/10 to-white/5 ring-1 ring-white/10" />
-
-                  <div className="mt-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <div className="text-lg font-semibold leading-tight">
-                          Aanya
-                        </div>
-                        <div className="mt-1 text-sm text-white/70">
-                          Product • FinTech • Mentor
-                        </div>
-                        <div className="mt-1 text-xs text-white/55">
-                          7 YOE • NYC market
-                        </div>
-                      </div>
-                      <span className="mt-1 rounded-full bg-pink-500/15 px-3 py-1 text-xs text-pink-200 ring-1 ring-pink-400/25">
-                        Mentor
-                      </span>
-                    </div>
-
-                    <div className="mt-3 space-y-2 text-sm text-white/75">
-                      <p>
-                        <span className="text-white/90">I can help with:</span>{" "}
-                        interview prep, PM pivots, prioritization
-                      </p>
-                      <p>
-                        <span className="text-white/90">
-                          I mentor best through:
-                        </span>{" "}
-                        structured weekly check-ins
-                      </p>
-                    </div>
-
-                    <div className="mt-5 grid grid-cols-2 gap-3">
-                      <button className="rounded-xl bg-white/10 px-4 py-2 text-sm font-semibold text-white/85 ring-1 ring-white/10 hover:bg-white/15 focus-ring">
-                        Pass
-                      </button>
-                      <button className="rounded-xl bg-gradient-to-r from-pink-500 to-violet-500 px-4 py-2 text-sm font-semibold shadow-lg shadow-pink-500/15 hover:opacity-95 focus-ring">
-                        Connect
-                      </button>
-                    </div>
-
-                    <div className="mt-3 text-xs text-white/55">
-                      Mutual opt-in only. No unsolicited messaging.
-                    </div>
+                  <div className="text-xs text-[--color-ink-muted]">
+                    Sarah wants to connect
                   </div>
                 </div>
-              </Card>
-
-              {/* floating chips */}
-              <div className="pointer-events-none absolute -left-8 top-12 hidden md:block">
-                {chips.slice(0, 4).map((c, i) => (
-                  <motion.div
-                    key={c}
-                    custom={i}
-                    variants={floating}
-                    initial="hidden"
-                    animate="show"
-                    className="mb-2 w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/70 ring-1 ring-white/10 backdrop-blur"
-                    style={{
-                      transform: `translateX(${i % 2 === 0 ? 0 : 10}px)`,
-                    }}
-                  >
-                    {c}
-                  </motion.div>
-                ))}
-              </div>
-
-              <div className="pointer-events-none absolute -right-8 top-16 hidden md:block">
-                {chips.slice(4).map((c, i) => (
-                  <motion.div
-                    key={c}
-                    custom={i}
-                    variants={floating}
-                    initial="hidden"
-                    animate="show"
-                    className="mb-2 ml-auto w-fit rounded-full bg-white/10 px-3 py-1 text-xs text-white/70 ring-1 ring-white/10 backdrop-blur"
-                    style={{
-                      transform: `translateX(${i % 2 === 0 ? 0 : -10}px)`,
-                    }}
-                  >
-                    {c}
-                  </motion.div>
-                ))}
               </div>
             </motion.div>
-          </Reveal>
+
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.7, duration: 0.6 }}
+              className="
+                absolute right-0 bottom-1/3 hidden lg:block
+                bg-white rounded-2xl shadow-lg border border-[--color-border]
+                px-4 py-3
+              "
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">✨</span>
+                <div>
+                  <div className="text-sm font-medium text-[--color-ink]">
+                    It's mutual!
+                  </div>
+                  <div className="text-xs text-[--color-ink-muted]">
+                    Start your conversation
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
       </Container>
     </section>
