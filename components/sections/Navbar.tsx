@@ -41,12 +41,6 @@ export default function Navbar() {
 
   const handleLinkClick = () => setMobileMenuOpen(false);
 
-  // Customize mobile colors here (no desktop impact)
-  const mobileIconColor = "bg-[--color-bloom]"; // hamburger lines on mobile
-  const mobileIconOpenColor = "bg-black md:bg-[--color-ink]"; // hamburger lines when menu is open (mobile)
-  const mobileCtaBg = "bg-[--color-bloom]";
-  const mobileCtaHoverBg = "hover:bg-[--color-violet]";
-
   return (
     <>
       <motion.header
@@ -114,16 +108,20 @@ export default function Navbar() {
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 -mr-2 rounded-lg hover:bg-black md:bg-black md:bg-[--color-ink]/5 transition-colors"
+                className="md:hidden p-2 -mr-2 rounded-lg hover:bg-[--color-ink]/5 transition-colors"
                 aria-label="Toggle menu"
                 aria-expanded={mobileMenuOpen}
               >
                 <div className="w-6 h-5 flex flex-col justify-center items-center gap-1.5">
+                  {/* IMPORTANT:
+                      - Lines are BLACK on mobile
+                      - Lines use your normal ink color on desktop
+                      - No other mobile UI pieces are forced black
+                  */}
                   <span
                     className={`
                       w-6 h-0.5 rounded-full
-                      ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
-                      md:bg-black md:bg-[--color-ink]
+                      bg-black md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}
                     `}
@@ -131,8 +129,7 @@ export default function Navbar() {
                   <span
                     className={`
                       w-6 h-0.5 rounded-full
-                      ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
-                      md:bg-black md:bg-[--color-ink]
+                      bg-black md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "opacity-0 scale-0" : ""}
                     `}
@@ -140,8 +137,7 @@ export default function Navbar() {
                   <span
                     className={`
                       w-6 h-0.5 rounded-full
-                      ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
-                      md:bg-black md:bg-[--color-ink]
+                      bg-black md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}
                     `}
@@ -168,7 +164,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-black md:bg-[--color-ink]/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-[--color-ink]/20 backdrop-blur-sm"
               onClick={() => setMobileMenuOpen(false)}
             />
 
@@ -199,7 +195,7 @@ export default function Navbar() {
                         className="
                           block py-3 px-4 -mx-4 rounded-xl
                           text-lg font-medium text-[--color-ink]
-                          hover:bg-black md:bg-[--color-ink]/5
+                          hover:bg-[--color-ink]/5
                           transition-colors duration-200
                         "
                       >
@@ -216,7 +212,7 @@ export default function Navbar() {
                     className="my-6 h-px bg-[--color-border]"
                   />
 
-                  {/* Mobile CTA (custom mobile-only color) */}
+                  {/* Mobile CTA */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -225,12 +221,12 @@ export default function Navbar() {
                     <a
                       href="#join"
                       onClick={handleLinkClick}
-                      className={`
+                      className="
                         block w-full py-4 rounded-xl text-center
-                        ${mobileCtaBg} text-white font-medium
-                        ${mobileCtaHoverBg}
+                        bg-[--color-ink] text-white font-medium
+                        hover:bg-[--color-ink-light]
                         transition-colors duration-200
-                      `}
+                      "
                     >
                       Join the waitlist
                     </a>
