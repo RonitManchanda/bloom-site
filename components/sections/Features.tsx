@@ -1,17 +1,107 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import Container from "@/components/ui/Container";
-import Card from "@/components/ui/Card";
 import PhoneMockup, { ScreenContent } from "@/components/ui/PhoneMockup";
+import { Reveal, fadeUp } from "@/components/ui/Motion";
 import {
   motion,
-  Reveal,
-  fadeUp,
-  StaggerContainer,
-} from "@/components/ui/Motion";
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 
-import { useMotionValueEvent, useScroll } from "framer-motion";
+/*
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                           CONFIGURATION OPTIONS                                ║
+║  Adjust these values to fine-tune the scroll-lock behavior and animations     ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+*/
+
+const CONFIG = {
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SCROLL LOCK BEHAVIOR
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // Where the section locks relative to viewport top (in pixels)
+  // 0 = section top at viewport top
+  // 80 = leave 80px gap at top (good if you have a fixed navbar)
+  // -100 = section scrolls 100px past viewport top before locking
+  LOCK_OFFSET: 0,
+
+  // How much scroll delta (wheel movement) needed to trigger a feature change
+  // Lower = more sensitive (changes faster)
+  // Higher = needs more scrolling to change
+  // Recommended: 50-150
+  SCROLL_THRESHOLD: 80,
+
+  // Cooldown between feature changes in milliseconds
+  // Prevents rapid-fire changes when scrolling fast
+  // Lower = faster transitions allowed
+  // Higher = more deliberate, one-at-a-time feel
+  // Recommended: 300-800
+  TRANSITION_COOLDOWN: 600,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // ANIMATION TIMING (in seconds)
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // Duration of the phone screen transition
+  SCREEN_TRANSITION_DURATION: 0.5,
+
+  // Duration of the card highlight transition
+  CARD_TRANSITION_DURATION: 0.4,
+
+  // Duration for bullet points to animate in
+  BULLETS_STAGGER_DELAY: 0.08,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // SPRING PHYSICS (for smooth animations)
+  // These use spring physics instead of duration-based timing
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // Spring stiffness: Higher = snappier, Lower = smoother/slower
+  // Recommended: 100-400
+  SPRING_STIFFNESS: 260,
+
+  // Spring damping: Higher = less bounce, Lower = more bounce
+  // Recommended: 20-40
+  SPRING_DAMPING: 30,
+
+  // Spring mass: Higher = heavier/slower, Lower = lighter/faster
+  // Recommended: 0.5-2
+  SPRING_MASS: 1,
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // EASING FUNCTIONS
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // Easing for screen transitions
+  // Options: "easeInOut", "easeOut", "easeIn", "linear",
+  //          "circOut", "backOut", "anticipate"
+  //          or custom [x1, y1, x2, y2] bezier curve
+  SCREEN_EASING: [0.32, 0.72, 0, 1], // Custom smooth easing
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // VISUAL EFFECTS
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  // Scale effect on active card (1 = no scale, 1.02 = 2% larger)
+  ACTIVE_CARD_SCALE: 1.02,
+
+  // Vertical offset for screen enter/exit animations (in pixels)
+  SCREEN_SLIDE_DISTANCE: 30,
+
+  // Enable/disable the scroll hint indicator
+  SHOW_SCROLL_HINT: true,
+};
+
+/*
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                              FEATURE DATA                                      ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+*/
 
 const features = [
   {
@@ -52,7 +142,12 @@ const features = [
   },
 ];
 
-// Screen components for each feature
+/*
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                            SCREEN COMPONENTS                                   ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+*/
+
 function ProfileScreen() {
   return (
     <ScreenContent className="bg-[--color-cream] p-4 pt-14">
@@ -74,36 +169,47 @@ function ProfileScreen() {
             label: "I mentor best through...",
             value: "Weekly structured check-ins",
           },
-        ].map((prompt) => (
-          <div
+        ].map((prompt, index) => (
+          <motion.div
             key={prompt.label}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1, duration: 0.3 }}
             className="bg-white rounded-xl p-3 border border-[--color-border]"
           >
             <div className="text-[10px] text-[--color-ink-muted] mb-1">
               {prompt.label}
             </div>
             <div className="text-sm text-[--color-ink]">{prompt.value}</div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      <div className="mt-4">
+      <motion.div
+        className="mt-4"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+      >
         <div className="text-xs text-[--color-ink-muted] font-medium mb-2">
           Topics
         </div>
         <div className="flex flex-wrap gap-2">
           {["Interview prep", "Resume", "Leadership", "Negotiation"].map(
-            (t) => (
-              <span
+            (t, i) => (
+              <motion.span
                 key={t}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.5 + i * 0.05 }}
                 className="px-2.5 py-1 bg-[--color-bloom]/10 text-[--color-bloom-deep] rounded-full text-[10px] font-medium"
               >
                 {t}
-              </span>
+              </motion.span>
             ),
           )}
         </div>
-      </div>
+      </motion.div>
     </ScreenContent>
   );
 }
@@ -119,7 +225,12 @@ function MatchingScreen() {
       </div>
 
       <div className="space-y-4">
-        <div className="bg-white rounded-xl p-4 border border-[--color-border]">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-xl p-4 border border-[--color-border]"
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[--color-ink]">
               Career Market
@@ -129,9 +240,12 @@ function MatchingScreen() {
             </span>
           </div>
           <div className="flex gap-2">
-            {["US", "Canada", "EU"].map((m) => (
-              <span
+            {["US", "Canada", "EU"].map((m, i) => (
+              <motion.span
                 key={m}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 + i * 0.05 }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
                   m === "US"
                     ? "bg-[--color-ink] text-white"
@@ -139,12 +253,17 @@ function MatchingScreen() {
                 }`}
               >
                 {m}
-              </span>
+              </motion.span>
             ))}
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white rounded-xl p-4 border border-[--color-border]">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="bg-white rounded-xl p-4 border border-[--color-border]"
+        >
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-[--color-ink]">
               Timezone Range
@@ -154,18 +273,31 @@ function MatchingScreen() {
             </span>
           </div>
           <div className="h-2 bg-[--color-cream-dark] rounded-full overflow-hidden">
-            <div className="h-full w-2/3 bg-gradient-to-r from-[--color-bloom] to-[--color-violet] rounded-full" />
+            <motion.div
+              initial={{ width: 0 }}
+              animate={{ width: "66%" }}
+              transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
+              className="h-full bg-gradient-to-r from-[--color-bloom] to-[--color-violet] rounded-full"
+            />
           </div>
-        </div>
+        </motion.div>
 
-        <div className="bg-white rounded-xl p-4 border border-[--color-border]">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-white rounded-xl p-4 border border-[--color-border]"
+        >
           <div className="text-sm font-medium text-[--color-ink] mb-2">
             Role Alignment
           </div>
           <div className="flex flex-wrap gap-2">
             {["Product", "Design", "Engineering"].map((r, i) => (
-              <span
+              <motion.span
                 key={r}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.4 + i * 0.05 }}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
                   i === 0
                     ? "bg-[--color-violet]/10 text-[--color-violet]"
@@ -173,10 +305,10 @@ function MatchingScreen() {
                 }`}
               >
                 {r}
-              </span>
+              </motion.span>
             ))}
           </div>
-        </div>
+        </motion.div>
       </div>
     </ScreenContent>
   );
@@ -192,9 +324,23 @@ function ConversationScreen() {
         Start your conversation
       </div>
 
-      <div className="bg-white rounded-xl p-4 border border-[--color-border] mb-4">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-xl p-4 border border-[--color-border] mb-4"
+      >
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[--color-bloom-soft] to-[--color-violet-soft]" />
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 15,
+              delay: 0.1,
+            }}
+            className="w-10 h-10 rounded-full bg-gradient-to-br from-[--color-bloom-soft] to-[--color-violet-soft]"
+          />
           <div>
             <div className="text-sm font-medium text-[--color-ink]">
               Alex K.
@@ -207,7 +353,7 @@ function ConversationScreen() {
         <div className="text-xs text-[--color-ink-muted]">
           Pick a conversation starter to break the ice:
         </div>
-      </div>
+      </motion.div>
 
       <div className="space-y-2">
         {[
@@ -215,8 +361,13 @@ function ConversationScreen() {
           "What feedback style works best for you?",
           "What does success look like in 6 weeks?",
         ].map((prompt, i) => (
-          <button
+          <motion.button
             key={prompt}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 + i * 0.1 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
             className={`
               w-full text-left p-3 rounded-xl text-xs
               transition-colors duration-200
@@ -228,13 +379,20 @@ function ConversationScreen() {
             `}
           >
             {prompt}
-          </button>
+          </motion.button>
         ))}
       </div>
 
-      <button className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[--color-bloom] to-[--color-violet] text-white text-sm font-medium">
+      <motion.button
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[--color-bloom] to-[--color-violet] text-white text-sm font-medium"
+      >
         Send message
-      </button>
+      </motion.button>
     </ScreenContent>
   );
 }
@@ -245,85 +403,368 @@ const screens: Record<string, React.ReactNode> = {
   conversation: <ConversationScreen />,
 };
 
+/*
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                            MAIN COMPONENT                                      ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+*/
+
 export default function Features() {
   const [activeFeature, setActiveFeature] = useState(0);
-
+  const [isLocked, setIsLocked] = useState(false);
+  const [isHoveringPhone, setIsHoveringPhone] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
+  const phoneRef = useRef<HTMLDivElement | null>(null);
+  const accumulatedDelta = useRef(0);
+  const isTransitioning = useRef(false);
+  const lastScrollTime = useRef(0);
+  const mousePosition = useRef({ x: 0, y: 0 });
 
-  // Controls how long the section stays pinned while scrolling
-  // 3 features -> 300vh feels good (one “screen” per feature)
-  const storyHeightVh = features.length * 100;
+  // Spring-based progress for smooth interpolation
+  const rawProgress = useMotionValue(0);
+  const smoothProgress = useSpring(rawProgress, {
+    stiffness: CONFIG.SPRING_STIFFNESS,
+    damping: CONFIG.SPRING_DAMPING,
+    mass: CONFIG.SPRING_MASS,
+  });
 
-  // Clamp helper
-  const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
-
+  // Track mouse position globally
   useEffect(() => {
-    const handleScroll = () => {
-      const el = sectionRef.current;
-      if (!el) return;
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePosition.current = { x: e.clientX, y: e.clientY };
 
-      const rect = el.getBoundingClientRect();
-      const maxIndex = features.length - 1;
-
-      // 🚨 Only run logic while the section is PINNED
-      const isPinned = rect.top <= 0 && rect.bottom >= window.innerHeight;
-
-      if (!isPinned) return;
-
-      const totalScrollable = el.offsetHeight - window.innerHeight;
-      if (totalScrollable <= 0) return;
-
-      const scrolledInside = -rect.top;
-      const progress = Math.min(
-        1,
-        Math.max(0, scrolledInside / totalScrollable),
-      );
-
-      const nextIndex = Math.round(progress * maxIndex);
-
-      setActiveFeature((prev) => (prev === nextIndex ? prev : nextIndex));
+      // Check if mouse is over phone mockup
+      const phone = phoneRef.current;
+      if (phone) {
+        const rect = phone.getBoundingClientRect();
+        const isOver =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom;
+        setIsHoveringPhone(isOver);
+      }
     };
 
-    handleScroll();
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const scrollToFeature = (i: number) => {
-    const el = sectionRef.current;
-    if (!el) return;
+  // Handle wheel events - only hijack when over phone mockup
+  useEffect(() => {
+    const section = sectionRef.current;
+    const phone = phoneRef.current;
+    if (!section || !phone) return;
 
-    const maxIndex = features.length - 1;
-    const progress = maxIndex === 0 ? 0 : i / maxIndex;
+    const isMouseOverPhone = () => {
+      const rect = phone.getBoundingClientRect();
+      const { x, y } = mousePosition.current;
+      return (
+        x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom
+      );
+    };
 
-    const sectionTop = window.scrollY + el.getBoundingClientRect().top;
-    const totalScrollable = el.offsetHeight - window.innerHeight;
+    const handleWheel = (e: WheelEvent) => {
+      const phoneRect = phone.getBoundingClientRect();
+      const sectionRect = section.getBoundingClientRect();
 
-    const targetY = sectionTop + progress * totalScrollable;
+      // Check if phone is visible on screen
+      const phoneVisible =
+        phoneRect.top < window.innerHeight && phoneRect.bottom > 0;
 
-    setActiveFeature(i);
-    window.scrollTo({ top: targetY, behavior: "smooth" });
+      if (!phoneVisible) {
+        if (isLocked) setIsLocked(false);
+        return;
+      }
+
+      // Check if mouse is over the phone mockup
+      const mouseOverPhone = isMouseOverPhone();
+
+      if (!isLocked) {
+        // Only lock if scrolling while mouse is over the phone
+        if (mouseOverPhone) {
+          e.preventDefault();
+          setIsLocked(true);
+
+          // Determine starting feature based on scroll direction
+          if (e.deltaY < 0 && activeFeature === 0) {
+            // Scrolling up at first feature - don't lock, let page scroll
+            return;
+          }
+          if (e.deltaY > 0 && activeFeature === features.length - 1) {
+            // Scrolling down at last feature - don't lock, let page scroll
+            return;
+          }
+
+          // Start processing scroll
+          accumulatedDelta.current = e.deltaY;
+          return;
+        }
+        return; // Let normal scroll happen
+      }
+
+      // We're locked - check if still over phone
+      if (!mouseOverPhone) {
+        // Mouse left the phone area - unlock
+        setIsLocked(false);
+        accumulatedDelta.current = 0;
+        return;
+      }
+
+      // Hijack the scroll
+      e.preventDefault();
+
+      if (isTransitioning.current) {
+        return;
+      }
+
+      // Accumulate scroll delta
+      accumulatedDelta.current += e.deltaY;
+
+      // Update raw progress for visual feedback
+      const progressDelta =
+        accumulatedDelta.current / (CONFIG.SCROLL_THRESHOLD * features.length);
+      rawProgress.set(
+        activeFeature + Math.max(-0.3, Math.min(0.3, progressDelta)),
+      );
+
+      // Check if we've accumulated enough to trigger a change
+      if (Math.abs(accumulatedDelta.current) >= CONFIG.SCROLL_THRESHOLD) {
+        const direction = accumulatedDelta.current > 0 ? 1 : -1;
+        const nextFeature = activeFeature + direction;
+
+        accumulatedDelta.current = 0;
+
+        // Scrolling up past first feature - unlock and allow scroll
+        if (nextFeature < 0) {
+          setIsLocked(false);
+          rawProgress.set(0);
+          return;
+        }
+
+        // Scrolling down past last feature - unlock and allow scroll
+        if (nextFeature >= features.length) {
+          setIsLocked(false);
+          rawProgress.set(features.length - 1);
+          return;
+        }
+
+        // Change feature with cooldown
+        isTransitioning.current = true;
+        lastScrollTime.current = Date.now();
+        setActiveFeature(nextFeature);
+        rawProgress.set(nextFeature);
+
+        setTimeout(() => {
+          isTransitioning.current = false;
+        }, CONFIG.TRANSITION_COOLDOWN);
+      }
+    };
+
+    // Touch handling for mobile
+    let touchStartY = 0;
+    let touchStartedOnPhone = false;
+    let touchVelocity = 0;
+    let lastTouchY = 0;
+    let lastTouchTime = 0;
+
+    const isTouchOverPhone = (touchX: number, touchY: number) => {
+      const rect = phone.getBoundingClientRect();
+      return (
+        touchX >= rect.left &&
+        touchX <= rect.right &&
+        touchY >= rect.top &&
+        touchY <= rect.bottom
+      );
+    };
+
+    const handleTouchStart = (e: TouchEvent) => {
+      const touch = e.touches[0];
+      touchStartY = touch.clientY;
+      lastTouchY = touchStartY;
+      lastTouchTime = Date.now();
+      touchVelocity = 0;
+
+      // Check if touch started on phone
+      touchStartedOnPhone = isTouchOverPhone(touch.clientX, touch.clientY);
+
+      if (touchStartedOnPhone) {
+        setIsLocked(true);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!touchStartedOnPhone) return;
+
+      const touch = e.touches[0];
+      const touchY = touch.clientY;
+      const deltaY = touchStartY - touchY; // Positive = scrolling down
+      const now = Date.now();
+
+      // Calculate velocity
+      if (now - lastTouchTime > 0) {
+        touchVelocity = (lastTouchY - touchY) / (now - lastTouchTime);
+      }
+      lastTouchY = touchY;
+      lastTouchTime = now;
+
+      // Prevent page scroll when touching phone
+      e.preventDefault();
+
+      const effectiveThreshold = Math.max(
+        30,
+        60 - Math.abs(touchVelocity) * 20,
+      );
+
+      if (Math.abs(deltaY) >= effectiveThreshold) {
+        if (isTransitioning.current) return;
+
+        const direction = deltaY > 0 ? 1 : -1;
+        const nextFeature = activeFeature + direction;
+
+        touchStartY = touchY;
+
+        if (nextFeature < 0) {
+          setIsLocked(false);
+          touchStartedOnPhone = false;
+          return;
+        }
+
+        if (nextFeature >= features.length) {
+          setIsLocked(false);
+          touchStartedOnPhone = false;
+          return;
+        }
+
+        isTransitioning.current = true;
+        setActiveFeature(nextFeature);
+        rawProgress.set(nextFeature);
+
+        setTimeout(() => {
+          isTransitioning.current = false;
+        }, CONFIG.TRANSITION_COOLDOWN);
+      }
+    };
+
+    const handleTouchEnd = () => {
+      touchStartedOnPhone = false;
+      setIsLocked(false);
+      accumulatedDelta.current = 0;
+    };
+
+    // Keyboard navigation
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Only work if mouse is over phone
+      if (!isHoveringPhone) return;
+
+      if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === " ") {
+        e.preventDefault();
+
+        if (isTransitioning.current) return;
+
+        const direction = e.key === "ArrowUp" ? -1 : 1;
+        const nextFeature = activeFeature + direction;
+
+        if (nextFeature < 0) {
+          setIsLocked(false);
+          return;
+        }
+
+        if (nextFeature >= features.length) {
+          setIsLocked(false);
+          window.scrollBy({ top: 100, behavior: "smooth" });
+          return;
+        }
+
+        isTransitioning.current = true;
+        setActiveFeature(nextFeature);
+        rawProgress.set(nextFeature);
+
+        setTimeout(() => {
+          isTransitioning.current = false;
+        }, CONFIG.TRANSITION_COOLDOWN);
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    window.addEventListener("touchstart", handleTouchStart, { passive: false });
+    window.addEventListener("touchmove", handleTouchMove, { passive: false });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isLocked, activeFeature, rawProgress, isHoveringPhone]);
+
+  // Safety: unlock if user somehow scrolls away
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!isLocked) return;
+
+      const section = sectionRef.current;
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+
+      if (rect.top > 150 || rect.bottom < window.innerHeight - 150) {
+        setIsLocked(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isLocked]);
+
+  // Animation variants for the phone screens
+  const screenVariants = {
+    initial: {
+      opacity: 0,
+      y: CONFIG.SCREEN_SLIDE_DISTANCE,
+      scale: 0.95,
+      filter: "blur(4px)",
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      filter: "blur(0px)",
+    },
+    exit: {
+      opacity: 0,
+      y: -CONFIG.SCREEN_SLIDE_DISTANCE,
+      scale: 0.95,
+      filter: "blur(4px)",
+    },
+  };
+
+  // Animation variants for bullet points
+  const bulletVariants = {
+    hidden: { opacity: 0, x: -20, filter: "blur(4px)" },
+    visible: (i: number) => ({
+      opacity: 1,
+      x: 0,
+      filter: "blur(0px)",
+      transition: {
+        delay: i * CONFIG.BULLETS_STAGGER_DELAY,
+        duration: 0.3,
+        ease: CONFIG.SCREEN_EASING,
+      },
+    }),
   };
 
   return (
     <section
+      ref={sectionRef}
       id="features"
-      ref={(node) => {
-        sectionRef.current = node;
-      }}
-      className="relative bg-[--color-cream-dark]"
-      style={{ height: `${storyHeightVh}vh` }}
+      className="relative bg-[--color-cream-dark] min-h-screen"
     >
-      {/* Sticky pinned viewport */}
-      <div className="sticky top-0 h-screen flex items-center section-padding">
+      <div className="min-h-screen flex items-center section-padding py-20">
         <Container>
-          {/* Header */}
           <Reveal variant={fadeUp} className="text-center mb-16">
             <p className="kicker mb-4">Core features</p>
             <h2 className="h2 text-[--color-ink]">
@@ -335,105 +776,277 @@ export default function Features() {
             </p>
           </Reveal>
 
-          {/* Layout */}
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            {/* Phone */}
+            {/* Phone mockup - left side */}
             <div className="order-2 lg:order-1 flex justify-center">
-              <PhoneMockup animate={false} className="relative">
-                <motion.div
-                  key={features[activeFeature].screen}
-                  initial={{ opacity: 0, y: 10, scale: 0.985 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  transition={{ duration: 0.25 }}
-                  className="h-full"
-                >
-                  {screens[features[activeFeature].screen]}
-                </motion.div>
-              </PhoneMockup>
+              <div
+                ref={phoneRef}
+                className={`
+                  relative transition-all duration-300
+                  ${isHoveringPhone ? "scale-[1.02]" : "scale-100"}
+                `}
+              >
+                {/* Scroll hint overlay */}
+                <AnimatePresence>
+                  {isHoveringPhone && !isLocked && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
+                    >
+                      <div className="bg-black/60 backdrop-blur-sm text-white text-xs px-4 py-2 rounded-full flex items-center gap-2">
+                        <motion.span
+                          animate={{ y: [0, -3, 0] }}
+                          transition={{ repeat: Infinity, duration: 1 }}
+                        >
+                          ↕
+                        </motion.span>
+                        Scroll to explore
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                <PhoneMockup animate={false} className="relative">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={features[activeFeature].screen}
+                      variants={screenVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                      transition={{
+                        duration: CONFIG.SCREEN_TRANSITION_DURATION,
+                        ease: CONFIG.SCREEN_EASING,
+                      }}
+                      className="h-full"
+                    >
+                      {screens[features[activeFeature].screen]}
+                    </motion.div>
+                  </AnimatePresence>
+                </PhoneMockup>
+              </div>
             </div>
 
-            {/* Cards */}
-            <div className="order-1 lg:order-2 space-y-6">
-              {features.map((feature, i) => (
-                <motion.button
-                  key={feature.title}
-                  onClick={() => scrollToFeature(i)}
-                  type="button"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
-                  className={`
-                    w-full text-left p-6 md:p-8 rounded-2xl md:rounded-3xl
-                    transition-all duration-500
-                    ${
-                      activeFeature === i
-                        ? "bg-white shadow-[0_8px_32px_rgba(26,22,20,0.08)] border-2 border-[--color-bloom]/20"
-                        : "bg-transparent border border-[--color-border] hover:bg-white/50"
-                    }
-                  `}
-                >
-                  <div className="flex items-start gap-4">
-                    <div
-                      className={`
-                        flex-shrink-0 w-8 h-8 rounded-lg
-                        flex items-center justify-center
-                        text-sm font-semibold
-                        transition-colors duration-300
-                        ${
-                          activeFeature === i
-                            ? "bg-[--color-bloom] text-white"
-                            : "bg-[--color-cream-dark] text-[--color-ink-muted]"
-                        }
-                      `}
-                    >
-                      {i + 1}
-                    </div>
+            {/* Feature cards - right side */}
+            <div className="order-1 lg:order-2 space-y-4">
+              {features.map((feature, i) => {
+                const isActive = activeFeature === i;
 
-                    <div className="flex-1">
-                      <p
-                        className={`
-                          text-xs font-medium mb-1
-                          ${
-                            activeFeature === i
-                              ? "text-[--color-bloom]"
-                              : "text-[--color-ink-muted]"
-                          }
-                        `}
+                return (
+                  <motion.button
+                    key={feature.title}
+                    onClick={() => {
+                      if (!isTransitioning.current) {
+                        setActiveFeature(i);
+                        rawProgress.set(i);
+                      }
+                    }}
+                    type="button"
+                    layout
+                    initial={false}
+                    animate={{
+                      scale: isActive ? CONFIG.ACTIVE_CARD_SCALE : 1,
+                      y: isActive ? -2 : 0,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: CONFIG.SPRING_STIFFNESS,
+                      damping: CONFIG.SPRING_DAMPING,
+                    }}
+                    className={`
+                      w-full text-left p-6 md:p-8 rounded-2xl md:rounded-3xl
+                      transition-all duration-300 ease-out
+                      ${
+                        isActive
+                          ? "bg-white shadow-[0_8px_32px_rgba(26,22,20,0.12)] border-2 border-[--color-bloom]/30"
+                          : "bg-transparent border border-[--color-border] hover:bg-white/50 hover:border-[--color-border-hover]"
+                      }
+                    `}
+                  >
+                    <div className="flex items-start gap-4">
+                      {/* Step number */}
+                      <motion.div
+                        animate={{
+                          backgroundColor: isActive
+                            ? "var(--color-bloom)"
+                            : "var(--color-cream-dark)",
+                          color: isActive
+                            ? "#ffffff"
+                            : "var(--color-ink-muted)",
+                          boxShadow: isActive
+                            ? "0 4px 12px rgba(0,0,0,0.15)"
+                            : "none",
+                        }}
+                        transition={{
+                          duration: CONFIG.CARD_TRANSITION_DURATION,
+                        }}
+                        className="flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-sm font-semibold"
                       >
-                        {feature.tag}
-                      </p>
+                        {i + 1}
+                      </motion.div>
 
-                      <h3 className="text-lg font-semibold text-[--color-ink] mb-2">
-                        {feature.title}
-                      </h3>
-
-                      <p className="text-sm text-[--color-ink-muted] mb-4">
-                        {feature.description}
-                      </p>
-
-                      {activeFeature === i && (
-                        <motion.ul
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          transition={{ duration: 0.25 }}
-                          className="space-y-2"
+                      <div className="flex-1 min-w-0">
+                        {/* Tag */}
+                        <motion.p
+                          animate={{
+                            color: isActive
+                              ? "var(--color-bloom)"
+                              : "var(--color-ink-muted)",
+                          }}
+                          transition={{
+                            duration: CONFIG.CARD_TRANSITION_DURATION,
+                          }}
+                          className="text-xs font-medium mb-1"
                         >
-                          {feature.bullets.map((bullet) => (
-                            <li
-                              key={bullet}
-                              className="flex items-center gap-2 text-sm text-[--color-ink-light]"
+                          {feature.tag}
+                        </motion.p>
+
+                        {/* Title */}
+                        <motion.h3
+                          animate={{
+                            color: isActive
+                              ? "var(--color-ink)"
+                              : "var(--color-ink-light)",
+                          }}
+                          transition={{
+                            duration: CONFIG.CARD_TRANSITION_DURATION,
+                          }}
+                          className="text-lg font-semibold mb-2"
+                        >
+                          {feature.title}
+                        </motion.h3>
+
+                        {/* Description */}
+                        <motion.p
+                          animate={{
+                            color: isActive
+                              ? "var(--color-ink-muted)"
+                              : "var(--color-ink-faint)",
+                          }}
+                          transition={{
+                            duration: CONFIG.CARD_TRANSITION_DURATION,
+                          }}
+                          className="text-sm mb-3"
+                        >
+                          {feature.description}
+                        </motion.p>
+
+                        {/* Expandable bullets */}
+                        <AnimatePresence>
+                          {isActive && (
+                            <motion.ul
+                              initial={{ opacity: 0, height: 0 }}
+                              animate={{ opacity: 1, height: "auto" }}
+                              exit={{ opacity: 0, height: 0 }}
+                              transition={{
+                                duration: 0.3,
+                                ease: CONFIG.SCREEN_EASING,
+                              }}
+                              className="space-y-2 overflow-hidden"
                             >
-                              <span className="w-1.5 h-1.5 rounded-full bg-[--color-bloom]" />
-                              {bullet}
-                            </li>
-                          ))}
-                        </motion.ul>
-                      )}
+                              {feature.bullets.map((bullet, bulletIndex) => (
+                                <motion.li
+                                  key={bullet}
+                                  custom={bulletIndex}
+                                  variants={bulletVariants}
+                                  initial="hidden"
+                                  animate="visible"
+                                  className="flex items-center gap-2 text-sm text-[--color-ink-light]"
+                                >
+                                  <motion.span
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{
+                                      delay:
+                                        bulletIndex *
+                                        CONFIG.BULLETS_STAGGER_DELAY,
+                                      type: "spring",
+                                      stiffness: 400,
+                                      damping: 15,
+                                    }}
+                                    className="w-1.5 h-1.5 rounded-full bg-[--color-bloom] flex-shrink-0"
+                                  />
+                                  {bullet}
+                                </motion.li>
+                              ))}
+                            </motion.ul>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </div>
-                  </div>
-                </motion.button>
-              ))}
+                  </motion.button>
+                );
+              })}
+
+              {/* Progress indicator dots */}
+              <div className="flex justify-center gap-2 pt-4">
+                {features.map((_, i) => (
+                  <motion.button
+                    key={i}
+                    onClick={() => {
+                      if (!isTransitioning.current) {
+                        setActiveFeature(i);
+                        rawProgress.set(i);
+                      }
+                    }}
+                    animate={{
+                      width: activeFeature === i ? 24 : 8,
+                      backgroundColor:
+                        activeFeature === i
+                          ? "var(--color-bloom)"
+                          : "var(--color-border)",
+                    }}
+                    whileHover={{
+                      backgroundColor:
+                        activeFeature === i
+                          ? "var(--color-bloom)"
+                          : "var(--color-ink-muted)",
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: CONFIG.SPRING_STIFFNESS,
+                      damping: CONFIG.SPRING_DAMPING,
+                    }}
+                    className="h-2 rounded-full"
+                    aria-label={`Go to feature ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              {/* Scroll hint */}
+              {CONFIG.SHOW_SCROLL_HINT && (
+                <AnimatePresence>
+                  {isLocked && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.3 }}
+                      className="flex justify-center pt-4"
+                    >
+                      <div className="flex items-center gap-2 text-xs text-[--color-ink-muted] bg-white/50 backdrop-blur-sm px-4 py-2 rounded-full">
+                        <motion.div
+                          animate={{ y: [0, 4, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1.5,
+                            ease: "easeInOut",
+                          }}
+                          className="text-[--color-bloom]"
+                        >
+                          ↓
+                        </motion.div>
+                        <span>Scroll to explore features</span>
+                        <span className="text-[--color-ink-faint]">
+                          ({activeFeature + 1}/{features.length})
+                        </span>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
             </div>
           </div>
         </Container>
