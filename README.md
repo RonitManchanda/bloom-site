@@ -1,8 +1,10 @@
-<![CDATA[# 🌸 Bloom
+# 🌸 Bloom
 
 **The match that moves you forward.**
 
 Bloom is a mentorship matchmaking platform that connects students and early-career professionals with mentors through mutual opt-in — no cold outreach, no awkward LinkedIn DMs.
+
+🔗 **Live Site:** [trybloom.vercel.app](https://trybloom.vercel.app)
 
 ---
 
@@ -35,7 +37,7 @@ Bloom fixes this by treating mentorship like modern dating apps treat relationsh
 
 | Layer | Technology |
 |-------|------------|
-| Framework | Next.js 16 |
+| Framework | Next.js |
 | Language | TypeScript |
 | Styling | Tailwind CSS |
 | Animation | Framer Motion |
@@ -44,7 +46,6 @@ Bloom fixes this by treating mentorship like modern dating apps treat relationsh
 ---
 
 ## 📁 Project Structure
-
 ```
 bloom/
 ├── app/
@@ -77,13 +78,12 @@ bloom/
 - npm or yarn
 
 ### Installation
-
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/bloom.git
+git clone https://github.com/RonitManchanda/bloom-site.git
 
 # Navigate to project
-cd bloom
+cd bloom-site
 
 # Install dependencies
 npm install
@@ -150,11 +150,10 @@ This project is private and not yet open-sourced.
 
 ## 📬 Contact
 
-Questions? Reach out or join the waitlist at [bloom.app](https://bloom.app)
+Questions? Reach out or join the waitlist at [trybloom.vercel.app](https://trybloom.vercel.app)
 
 ---
 
 <p align="center">
   <em>Built with 💜 at Virginia Tech</em>
 </p>
-]]>
