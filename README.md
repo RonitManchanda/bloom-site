@@ -103,11 +103,11 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 - [x] Animated UI components
 - [x] FAQ section
 - [x] Testimonials
-- [ ] User authentication (LinkedIn OAuth)
-- [ ] Profile creation flow
-- [ ] Matching algorithm
-- [ ] In-app messaging
-- [ ] Trust & verification badges
+- [x] User authentication (LinkedIn OAuth)
+- [x] Profile creation flow
+- [x] Matching algorithm
+- [x] In-app messaging
+- [x] Trust & verification badges
 
 ---
 
