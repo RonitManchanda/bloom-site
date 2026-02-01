@@ -1,4 +1,5 @@
 "use client";
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1];
 
 import { motion } from "@/components/ui/Motion";
 
@@ -19,7 +20,7 @@ export default function PhoneMockup({
         initial: { opacity: 0, y: 40, rotateX: 8 },
         whileInView: { opacity: 1, y: 0, rotateX: 0 },
         viewport: { once: true, margin: "-100px" },
-        transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
+        transition: { duration: 0.9, EASE },
       }
     : {};
 
