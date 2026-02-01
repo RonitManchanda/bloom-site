@@ -25,27 +25,28 @@ Bloom fixes this by treating mentorship like modern dating apps treat relationsh
 
 ## 🎯 Who is this for?
 
-| User Type | Description |
-|-----------|-------------|
+| User Type   | Description                                              |
+| ----------- | -------------------------------------------------------- |
 | **Mentees** | Students and early-career professionals seeking guidance |
-| **Mentors** | Mid- to senior-level professionals open to giving back |
-| **Hybrid** | Users who mentor in one area while learning in another |
+| **Mentors** | Mid- to senior-level professionals open to giving back   |
+| **Hybrid**  | Users who mentor in one area while learning in another   |
 
 ---
 
 ## 🛠 Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Framework | Next.js |
-| Language | TypeScript |
-| Styling | Tailwind CSS |
-| Animation | Framer Motion |
-| Deployment | Vercel |
+| Layer      | Technology    |
+| ---------- | ------------- |
+| Framework  | Next.js       |
+| Language   | TypeScript    |
+| Styling    | Tailwind CSS  |
+| Animation  | Framer Motion |
+| Deployment | Vercel        |
 
 ---
 
 ## 📁 Project Structure
+
 ```
 bloom/
 ├── app/
@@ -78,6 +79,7 @@ bloom/
 - npm or yarn
 
 ### Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/RonitManchanda/bloom-site.git
@@ -115,12 +117,12 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 ### Colors
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--color-bloom` | Pink accent | CTAs, highlights |
-| `--color-ink` | Dark brown | Primary text |
-| `--color-ink-muted` | Medium brown | Secondary text |
-| `--color-cream` | Warm white | Backgrounds |
+| Token                | Value        | Usage               |
+| -------------------- | ------------ | ------------------- |
+| `--color-bloom`      | Pink accent  | CTAs, highlights    |
+| `--color-ink`        | Dark brown   | Primary text        |
+| `--color-ink-muted`  | Medium brown | Secondary text      |
+| `--color-cream`      | Warm white   | Backgrounds         |
 | `--color-cream-dark` | Darker cream | Section backgrounds |
 
 ### Typography
@@ -155,5 +157,5 @@ Questions? Reach out or join the waitlist at [trybloom.vercel.app](https://trybl
 ---
 
 <p align="center">
-  <em>Built with 💜 at Virginia Tech</em>
+  <em>Built by Ronit Manchanda, Saamarth Attray, Jaswant Pelluru, and Amanuel Dissassa</em>
 </p>
