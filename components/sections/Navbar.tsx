@@ -43,7 +43,7 @@ export default function Navbar() {
 
   // Customize mobile colors here (no desktop impact)
   const mobileIconColor = "bg-[--color-bloom]"; // hamburger lines on mobile
-  const mobileIconOpenColor = "bg-[--color-ink]"; // hamburger lines when menu is open (mobile)
+  const mobileIconOpenColor = "bg-black md:bg-[--color-ink]"; // hamburger lines when menu is open (mobile)
   const mobileCtaBg = "bg-[--color-bloom]";
   const mobileCtaHoverBg = "hover:bg-[--color-violet]";
 
@@ -114,7 +114,7 @@ export default function Navbar() {
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 -mr-2 rounded-lg hover:bg-[--color-ink]/5 transition-colors"
+                className="md:hidden p-2 -mr-2 rounded-lg hover:bg-black md:bg-[--color-ink]/5 transition-colors"
                 aria-label="Toggle menu"
                 aria-expanded={mobileMenuOpen}
               >
@@ -123,7 +123,7 @@ export default function Navbar() {
                     className={`
                       w-6 h-0.5 rounded-full
                       ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
-                      md:bg-[--color-ink]
+                      md:bg-black md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}
                     `}
@@ -132,7 +132,7 @@ export default function Navbar() {
                     className={`
                       w-6 h-0.5 rounded-full
                       ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
-                      md:bg-[--color-ink]
+                      md:bg-black md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "opacity-0 scale-0" : ""}
                     `}
@@ -141,7 +141,7 @@ export default function Navbar() {
                     className={`
                       w-6 h-0.5 rounded-full
                       ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
-                      md:bg-[--color-ink]
+                      md:bg-black md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}
                     `}
