@@ -114,7 +114,7 @@ export default function Navbar() {
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="md:hidden p-2 -mr-2 rounded-lg hover:bg-black md:bg-[--color-ink]/5 transition-colors"
+                className="md:hidden p-2 -mr-2 rounded-lg hover:bg-black md:bg-black md:bg-[--color-ink]/5 transition-colors"
                 aria-label="Toggle menu"
                 aria-expanded={mobileMenuOpen}
               >
@@ -168,7 +168,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-[--color-ink]/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-black md:bg-[--color-ink]/20 backdrop-blur-sm"
               onClick={() => setMobileMenuOpen(false)}
             />
 
@@ -199,7 +199,7 @@ export default function Navbar() {
                         className="
                           block py-3 px-4 -mx-4 rounded-xl
                           text-lg font-medium text-[--color-ink]
-                          hover:bg-[--color-ink]/5
+                          hover:bg-black md:bg-[--color-ink]/5
                           transition-colors duration-200
                         "
                       >
