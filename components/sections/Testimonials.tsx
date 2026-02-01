@@ -12,45 +12,45 @@ import {
 const testimonials = [
   {
     quote:
-      "Finally, a platform that gets it. No more awkward LinkedIn DMs hoping someone responds. Both parties want to be here.",
-    author: "Early-career PM",
-    location: "San Francisco, CA",
-    highlight: "Finally, a platform that gets it.",
+      "I always wanted a mentor but had no idea where to start. Bloom made it easy to find someone in my field without the awkward cold emails.",
+    author: "Ethan Skidmore",
+    location: "Sophomore, Virginia Tech - Computer Science",
+    highlight: "No more awkward cold emails.",
   },
   {
     quote:
-      "As a mentor, I love the structure. Clear expectations, time-bounded commitments, and mentees who are actually prepared.",
-    author: "Senior Engineering Manager",
-    location: "New York, NY",
-    highlight: "I love the structure.",
+      "The matching process was super simple. I got paired with a software engineer who actually remembers what it's like to be a student.",
+    author: "Abhinay Marakje",
+    location: "Sophomore, Virginia Tech — Computer Science",
+    highlight: "The matching process was super simple.",
   },
   {
     quote:
-      "The prompts made it so easy to share what I'm actually looking for. My mentor understood my goals from day one.",
-    author: "Career switcher",
-    location: "Toronto, Canada",
-    highlight: "My mentor understood my goals from day one.",
+      "Having someone outside of school to talk to about my career has been really helpful. My mentor gives advice my professors can't.",
+    author: "Anirudh Sridhar",
+    location: "Sophomore, Virginia Tech — Computer Science",
+    highlight: "Advice my professors can't give.",
   },
   {
     quote:
-      "Remote-first matching changed everything. My perfect mentor was in London, and the timezone badge made scheduling easy.",
-    author: "Product Designer",
-    location: "Austin, TX",
-    highlight: "Remote-first matching changed everything.",
+      "I love that both people have to opt in. It makes the whole thing feel less one-sided and more like a real connection.",
+    author: "Jacob Reyes",
+    location: "Junior, Virginia Tech — Mechanical Engineering",
+    highlight: "It feels like a real connection.",
   },
   {
     quote:
-      "The mutual opt-in is brilliant. Knowing my mentee actively chose me makes me more invested in their success.",
-    author: "VP of Marketing",
-    location: "Seattle, WA",
-    highlight: "The mutual opt-in is brilliant.",
+      "Finally something that isn't LinkedIn. The interface is clean and I actually know what to say when I message my mentor.",
+    author: "Viduttama Gaur",
+    location: "Sophomore, Virginia Tech — Computer Science",
+    highlight: "Finally something that isn't LinkedIn.",
   },
   {
     quote:
-      "No more cold outreach anxiety. The verification and guided prompts make starting a conversation feel natural.",
-    author: "Recent graduate",
-    location: "Chicago, IL",
-    highlight: "Starting a conversation feels natural.",
+      "I was nervous to sign up but my mentor has been so welcoming. We meet every other week and it's honestly the highlight of my month.",
+    author: "Liam Toto",
+    location: "Sophomore, George Mason — Finance",
+    highlight: "Honestly the highlight of my month.",
   },
 ];
 

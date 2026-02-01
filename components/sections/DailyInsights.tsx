@@ -4,30 +4,46 @@ import { useState } from "react";
 import Container from "@/components/ui/Container";
 import { motion, Reveal, fadeUp } from "@/components/ui/Motion";
 
-const insights = [
+const faqs = [
   {
-    title: "Start with mutual intent",
-    preview:
-      "The best mentorship relationships begin when both parties actively choose each other...",
-    full: "The best mentorship relationships begin when both parties actively choose each other. Unlike cold outreach where one person hopes for a response, Bloom ensures both mentor and mentee have expressed genuine interest before any conversation begins. This mutual opt-in creates a foundation of respect and commitment from day one.",
+    question: "How does matching work?",
+    answer:
+      "Bloom uses a mutual opt-in system—like a dating app, but for mentorship. You'll only connect with someone if you both express interest. Matches are based on your career market, role alignment, experience level, goals, and availability. No cold messages, no awkward outreach.",
   },
   {
-    title: "Make your goals obvious",
-    preview:
-      "Vague networking leads to vague results. When you clearly state what you're working toward...",
-    full: "Vague networking leads to vague results. When you clearly state what you're working toward—whether it's a career pivot, leadership growth, or interview preparation—you attract mentors who can actually help. Bloom's prompted profiles ensure both sides understand expectations before connecting.",
+    question: "Can I be both a mentor and a mentee?",
+    answer:
+      "Yes! You can switch between mentor and mentee roles without creating separate accounts. Many users are mentees in one area while mentoring others in their zone of expertise.",
   },
   {
-    title: "Relevance beats proximity",
-    preview:
-      "In a remote-first world, the best mentor for your journey might be across the globe...",
-    full: "In a remote-first world, the best mentor for your journey might be across the globe. Bloom prioritizes market relevance, role alignment, and goals over physical location. While you can prefer local connections, geography never limits your access to the guidance you need.",
+    question: "How do you verify users?",
+    answer:
+      "We use LinkedIn OAuth as our primary verification to confirm your role and identity. You can also verify with an institutional or company email. Verified users get trust badges on their profiles so you know who you're connecting with.",
   },
   {
-    title: "Structure creates safety",
-    preview:
-      "The most productive mentorship relationships have clear boundaries and expectations...",
-    full: "The most productive mentorship relationships have clear boundaries and expectations. Bloom's guided prompts help you set cadence preferences, feedback styles, and time commitments upfront. This structure reduces anxiety for both parties and creates space for genuine growth.",
+    question: "Do I have to meet in person?",
+    answer:
+      "Nope—Bloom is remote-first by default. Your perfect mentor might be across the country or across the world. You can set a preference for local connections if you want, but location never limits your access to great matches.",
+  },
+  {
+    question: "What's on a profile?",
+    answer:
+      "Profiles include your photo, name, pronouns, role, industry, and experience level. Instead of a free-form bio, you'll answer guided prompts like 'I can help with...' or 'I'm working toward...' plus skill tags like interview prep, career switching, or leadership.",
+  },
+  {
+    question: "How do timezones work?",
+    answer:
+      "We show a simple badge like '+3h' or '-2h' relative to your location so you can quickly see scheduling compatibility. No confusing UTC codes—just clear, human-friendly time differences.",
+  },
+  {
+    question: "What if a match isn't working out?",
+    answer:
+      "You can unmatch at any time with no awkwardness. We also have easy report flows if someone isn't respecting the mentorship boundaries. Your safety and comfort come first.",
+  },
+  {
+    question: "Is Bloom free?",
+    answer:
+      "We're currently in early access and free to join. Sign up for the waitlist to be notified when we launch and to help shape what Bloom becomes.",
   },
 ];
 
@@ -35,28 +51,27 @@ export default function DailyInsights() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="safety" className="relative section-padding">
+    <section id="faq" className="relative section-padding">
       <Container size="narrow">
         {/* Section header */}
         <Reveal variant={fadeUp} className="text-center mb-12">
-          <p className="kicker mb-4">Mentorship insights</p>
+          <p className="kicker mb-4">FAQ</p>
           <h2 className="h2 text-[--color-ink]">
-            Stay grounded in what <em>actually works</em>
+            Questions? <em>We've got answers.</em>
           </h2>
           <p className="lead mt-4 max-w-xl mx-auto">
-            Principles from years of studying what makes mentorship
-            relationships succeed—delivered through the Bloom experience.
+            Everything you need to know about how Bloom works.
           </p>
         </Reveal>
 
         {/* Accordion cards */}
         <div className="space-y-4">
-          {insights.map((insight, i) => {
+          {faqs.map((faq, i) => {
             const isOpen = openIndex === i;
 
             return (
               <motion.div
-                key={insight.title}
+                key={faq.question}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -99,22 +114,16 @@ export default function DailyInsights() {
                         <path
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                          d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                         />
                       </svg>
                     </div>
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-[--color-ink] mb-2">
-                        {insight.title}
+                      <h3 className="text-lg font-semibold text-[--color-ink]">
+                        {faq.question}
                       </h3>
-
-                      {!isOpen && (
-                        <p className="text-sm text-[--color-ink-muted] line-clamp-2">
-                          {insight.preview}
-                        </p>
-                      )}
                     </div>
 
                     {/* Toggle indicator */}
@@ -156,13 +165,8 @@ export default function DailyInsights() {
                   >
                     <div className="pl-14">
                       <p className="text-sm text-[--color-ink-light] leading-relaxed">
-                        {insight.full}
+                        {faq.answer}
                       </p>
-                      <div className="mt-4 pt-4 border-t border-[--color-border]">
-                        <span className="text-xs text-[--color-bloom] font-medium">
-                          Experience this in the Bloom app →
-                        </span>
-                      </div>
                     </div>
                   </motion.div>
                 </button>
