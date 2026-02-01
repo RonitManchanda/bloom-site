@@ -53,15 +53,15 @@ export default function Hero() {
           {/* Left: Copy */}
           <StaggerContainer className="text-center lg:text-left">
             <motion.h1 variants={fadeUp} className="h1 text-[--color-ink]">
-              <em>Tiny connections,</em> remarkable careers.
+              <em>Plant ideas,</em> grow careers.
             </motion.h1>
 
             <motion.p
               variants={fadeUp}
               className="lead mt-6 max-w-xl mx-auto lg:mx-0"
             >
-              Based on the proven principles of mutual opt-in and structured
-              connection, Bloom is a mentorship app like no other.
+              Bloom helps you move forward with clarity and structure - without
+              pressure, awkward outreach, or performative networking.
             </motion.p>
 
             {/* App store buttons placeholder */}

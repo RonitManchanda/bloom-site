@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Container from "@/components/ui/Container";
 import Card from "@/components/ui/Card";
 import PhoneMockup, { ScreenContent } from "@/components/ui/PhoneMockup";
@@ -10,6 +10,8 @@ import {
   fadeUp,
   StaggerContainer,
 } from "@/components/ui/Motion";
+
+import { useMotionValueEvent, useScroll } from "framer-motion";
 
 const features = [
   {
@@ -246,110 +248,196 @@ const screens: Record<string, React.ReactNode> = {
 export default function Features() {
   const [activeFeature, setActiveFeature] = useState(0);
 
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  // Controls how long the section stays pinned while scrolling
+  // 3 features -> 300vh feels good (one “screen” per feature)
+  const storyHeightVh = features.length * 100;
+
+  // Clamp helper
+  const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const el = sectionRef.current;
+      if (!el) return;
+
+      const rect = el.getBoundingClientRect();
+      const maxIndex = features.length - 1;
+
+      // 🚨 Only run logic while the section is PINNED
+      const isPinned = rect.top <= 0 && rect.bottom >= window.innerHeight;
+
+      if (!isPinned) return;
+
+      const totalScrollable = el.offsetHeight - window.innerHeight;
+      if (totalScrollable <= 0) return;
+
+      const scrolledInside = -rect.top;
+      const progress = Math.min(
+        1,
+        Math.max(0, scrolledInside / totalScrollable),
+      );
+
+      const nextIndex = Math.round(progress * maxIndex);
+
+      setActiveFeature((prev) => (prev === nextIndex ? prev : nextIndex));
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("resize", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
+
+  const scrollToFeature = (i: number) => {
+    const el = sectionRef.current;
+    if (!el) return;
+
+    const maxIndex = features.length - 1;
+    const progress = maxIndex === 0 ? 0 : i / maxIndex;
+
+    const sectionTop = window.scrollY + el.getBoundingClientRect().top;
+    const totalScrollable = el.offsetHeight - window.innerHeight;
+
+    const targetY = sectionTop + progress * totalScrollable;
+
+    setActiveFeature(i);
+    window.scrollTo({ top: targetY, behavior: "smooth" });
+  };
+
   return (
     <section
       id="features"
-      className="relative section-padding bg-[--color-cream-dark]"
+      ref={(node) => {
+        sectionRef.current = node;
+      }}
+      className="relative bg-[--color-cream-dark]"
+      style={{ height: `${storyHeightVh}vh` }}
     >
-      <Container>
-        {/* Section header */}
-        <Reveal variant={fadeUp} className="text-center mb-16">
-          <p className="kicker mb-4">Core features</p>
-          <h2 className="h2 text-[--color-ink]">
-            Bloom is designed to help you <em>take action</em>
-          </h2>
-          <p className="lead mt-4 max-w-2xl mx-auto">
-            Our features are built to help you build real relationships, not
-            just collect connections.
-          </p>
-        </Reveal>
+      {/* Sticky pinned viewport */}
+      <div className="sticky top-0 h-screen flex items-center section-padding">
+        <Container>
+          {/* Header */}
+          <Reveal variant={fadeUp} className="text-center mb-16">
+            <p className="kicker mb-4">Core features</p>
+            <h2 className="h2 text-[--color-ink]">
+              Bloom is designed to help you <em>take action</em>
+            </h2>
+            <p className="lead mt-4 max-w-2xl mx-auto">
+              Our features are built to help you build real relationships, not
+              just collect connections.
+            </p>
+          </Reveal>
 
-        {/* Features layout */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Phone mockup */}
-          <div className="order-2 lg:order-1 flex justify-center">
-            <PhoneMockup animate={false} className="relative">
-              {screens[features[activeFeature].screen]}
-            </PhoneMockup>
-          </div>
+          {/* Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+            {/* Phone */}
+            <div className="order-2 lg:order-1 flex justify-center">
+              <PhoneMockup animate={false} className="relative">
+                <motion.div
+                  key={features[activeFeature].screen}
+                  initial={{ opacity: 0, y: 10, scale: 0.985 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.25 }}
+                  className="h-full"
+                >
+                  {screens[features[activeFeature].screen]}
+                </motion.div>
+              </PhoneMockup>
+            </div>
 
-          {/* Feature cards */}
-          <div className="order-1 lg:order-2 space-y-6">
-            {features.map((feature, i) => (
-              <motion.button
-                key={feature.title}
-                onClick={() => setActiveFeature(i)}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className={`
-                  w-full text-left p-6 md:p-8 rounded-2xl md:rounded-3xl
-                  transition-all duration-500
-                  ${
-                    activeFeature === i
-                      ? "bg-white shadow-[0_8px_32px_rgba(26,22,20,0.08)] border-2 border-[--color-bloom]/20"
-                      : "bg-transparent border border-[--color-border] hover:bg-white/50"
-                  }
-                `}
-              >
-                <div className="flex items-start gap-4">
-                  <div
-                    className={`
-                      flex-shrink-0 w-8 h-8 rounded-lg
-                      flex items-center justify-center
-                      text-sm font-semibold
-                      transition-colors duration-300
-                      ${
-                        activeFeature === i
-                          ? "bg-[--color-bloom] text-white"
-                          : "bg-[--color-cream-dark] text-[--color-ink-muted]"
-                      }
-                    `}
-                  >
-                    {i + 1}
-                  </div>
-                  <div className="flex-1">
-                    <p
+            {/* Cards */}
+            <div className="order-1 lg:order-2 space-y-6">
+              {features.map((feature, i) => (
+                <motion.button
+                  key={feature.title}
+                  onClick={() => scrollToFeature(i)}
+                  type="button"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className={`
+                    w-full text-left p-6 md:p-8 rounded-2xl md:rounded-3xl
+                    transition-all duration-500
+                    ${
+                      activeFeature === i
+                        ? "bg-white shadow-[0_8px_32px_rgba(26,22,20,0.08)] border-2 border-[--color-bloom]/20"
+                        : "bg-transparent border border-[--color-border] hover:bg-white/50"
+                    }
+                  `}
+                >
+                  <div className="flex items-start gap-4">
+                    <div
                       className={`
-                        text-xs font-medium mb-1
-                        ${activeFeature === i ? "text-[--color-bloom]" : "text-[--color-ink-muted]"}
+                        flex-shrink-0 w-8 h-8 rounded-lg
+                        flex items-center justify-center
+                        text-sm font-semibold
+                        transition-colors duration-300
+                        ${
+                          activeFeature === i
+                            ? "bg-[--color-bloom] text-white"
+                            : "bg-[--color-cream-dark] text-[--color-ink-muted]"
+                        }
                       `}
                     >
-                      {feature.tag}
-                    </p>
-                    <h3 className="text-lg font-semibold text-[--color-ink] mb-2">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm text-[--color-ink-muted] mb-4">
-                      {feature.description}
-                    </p>
+                      {i + 1}
+                    </div>
 
-                    {activeFeature === i && (
-                      <motion.ul
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        transition={{ duration: 0.3 }}
-                        className="space-y-2"
+                    <div className="flex-1">
+                      <p
+                        className={`
+                          text-xs font-medium mb-1
+                          ${
+                            activeFeature === i
+                              ? "text-[--color-bloom]"
+                              : "text-[--color-ink-muted]"
+                          }
+                        `}
                       >
-                        {feature.bullets.map((bullet) => (
-                          <li
-                            key={bullet}
-                            className="flex items-center gap-2 text-sm text-[--color-ink-light]"
-                          >
-                            <span className="w-1.5 h-1.5 rounded-full bg-[--color-bloom]" />
-                            {bullet}
-                          </li>
-                        ))}
-                      </motion.ul>
-                    )}
+                        {feature.tag}
+                      </p>
+
+                      <h3 className="text-lg font-semibold text-[--color-ink] mb-2">
+                        {feature.title}
+                      </h3>
+
+                      <p className="text-sm text-[--color-ink-muted] mb-4">
+                        {feature.description}
+                      </p>
+
+                      {activeFeature === i && (
+                        <motion.ul
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          transition={{ duration: 0.25 }}
+                          className="space-y-2"
+                        >
+                          {feature.bullets.map((bullet) => (
+                            <li
+                              key={bullet}
+                              className="flex items-center gap-2 text-sm text-[--color-ink-light]"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-[--color-bloom]" />
+                              {bullet}
+                            </li>
+                          ))}
+                        </motion.ul>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.button>
-            ))}
+                </motion.button>
+              ))}
+            </div>
           </div>
-        </div>
-      </Container>
+        </Container>
+      </div>
     </section>
   );
 }
