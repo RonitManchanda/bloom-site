@@ -10,9 +10,7 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -20,9 +18,7 @@ export default function Navbar() {
   // Close mobile menu when screen is resized to desktop
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setMobileMenuOpen(false);
-      }
+      if (window.innerWidth >= 768) setMobileMenuOpen(false);
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -30,11 +26,7 @@ export default function Navbar() {
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -47,9 +39,13 @@ export default function Navbar() {
     { label: "FAQ", href: "#faq" },
   ];
 
-  const handleLinkClick = () => {
-    setMobileMenuOpen(false);
-  };
+  const handleLinkClick = () => setMobileMenuOpen(false);
+
+  // Customize mobile colors here (no desktop impact)
+  const mobileIconColor = "bg-[--color-bloom]"; // hamburger lines on mobile
+  const mobileIconOpenColor = "bg-[--color-ink]"; // hamburger lines when menu is open (mobile)
+  const mobileCtaBg = "bg-[--color-bloom]";
+  const mobileCtaHoverBg = "hover:bg-[--color-violet]";
 
   return (
     <>
@@ -125,21 +121,27 @@ export default function Navbar() {
                 <div className="w-6 h-5 flex flex-col justify-center items-center gap-1.5">
                   <span
                     className={`
-                      w-6 h-0.5 bg-[--color-ink] rounded-full
+                      w-6 h-0.5 rounded-full
+                      ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
+                      md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "rotate-45 translate-y-2" : ""}
                     `}
                   />
                   <span
                     className={`
-                      w-6 h-0.5 bg-[--color-ink] rounded-full
+                      w-6 h-0.5 rounded-full
+                      ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
+                      md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "opacity-0 scale-0" : ""}
                     `}
                   />
                   <span
                     className={`
-                      w-6 h-0.5 bg-[--color-ink] rounded-full
+                      w-6 h-0.5 rounded-full
+                      ${mobileMenuOpen ? mobileIconOpenColor : mobileIconColor}
+                      md:bg-[--color-ink]
                       transition-all duration-300 ease-out
                       ${mobileMenuOpen ? "-rotate-45 -translate-y-2" : ""}
                     `}
@@ -214,7 +216,7 @@ export default function Navbar() {
                     className="my-6 h-px bg-[--color-border]"
                   />
 
-                  {/* Mobile CTA */}
+                  {/* Mobile CTA (custom mobile-only color) */}
                   <motion.div
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -223,12 +225,12 @@ export default function Navbar() {
                     <a
                       href="#join"
                       onClick={handleLinkClick}
-                      className="
+                      className={`
                         block w-full py-4 rounded-xl text-center
-                        bg-[--color-ink] text-white font-medium
-                        hover:bg-[--color-ink-light]
+                        ${mobileCtaBg} text-white font-medium
+                        ${mobileCtaHoverBg}
                         transition-colors duration-200
-                      "
+                      `}
                     >
                       Join the waitlist
                     </a>
