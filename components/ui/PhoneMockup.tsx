@@ -1,33 +1,25 @@
 "use client";
 
-import { motion } from "@/components/ui/Motion";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 interface PhoneMockupProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  screenshot?: string;
   className?: string;
   animate?: boolean;
 }
 
 export default function PhoneMockup({
   children,
+  screenshot,
   className = "",
   animate = true,
 }: PhoneMockupProps) {
-  const Wrapper = animate ? motion.div : "div";
-  const wrapperProps = animate
-    ? {
-        initial: { opacity: 0, y: 40, rotateX: 8 },
-        whileInView: { opacity: 1, y: 0, rotateX: 0 },
-        viewport: { once: true, margin: "-100px" },
-        transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] },
-      }
-    : {};
-
   return (
-    <Wrapper
+    <div
       className={`relative mx-auto w-full max-w-[320px] ${className}`}
       style={{ perspective: "1200px" }}
-      {...wrapperProps}
     >
       {/* Glow effect behind phone */}
       <div
@@ -38,53 +30,74 @@ export default function PhoneMockup({
         "
       />
 
-      {/* Phone frame */}
-      <div
-        className="
-          relative rounded-[44px] p-3
-          bg-gradient-to-b from-[#2A2520] to-[#1A1614]
-          shadow-[0_2px_4px_rgba(0,0,0,0.1),0_8px_16px_rgba(0,0,0,0.1),0_32px_64px_rgba(0,0,0,0.2)]
-        "
+      {/* Phone container */}
+      <motion.div
+        className="relative"
+        initial={animate ? { opacity: 0, y: 40 } : undefined}
+        whileInView={animate ? { opacity: 1, y: 0 } : undefined}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
       >
-        {/* Inner highlight */}
+        {/* Phone frame */}
         <div
           className="
-            absolute inset-0 rounded-[44px]
-            bg-gradient-to-b from-white/[0.08] to-transparent
-            pointer-events-none
-          "
-        />
-
-        {/* Dynamic Island / Notch */}
-        <div
-          className="
-            absolute top-5 left-1/2 -translate-x-1/2 z-20
-            w-[100px] h-[28px] rounded-full
-            bg-[#0A0A0A]
-          "
-        />
-
-        {/* Screen area */}
-        <div
-          className="
-            relative rounded-[36px] overflow-hidden
-            bg-[--color-cream]
-            aspect-[9/19.5]
+            relative rounded-[44px] p-3
+            bg-gradient-to-b from-[#2A2520] to-[#1A1614]
+            shadow-[0_2px_4px_rgba(0,0,0,0.1),0_8px_16px_rgba(0,0,0,0.1),0_32px_64px_rgba(0,0,0,0.2)]
           "
         >
-          {children}
-        </div>
+          {/* Inner highlight */}
+          <div
+            className="
+              absolute inset-0 rounded-[44px]
+              bg-gradient-to-b from-white/[0.08] to-transparent
+              pointer-events-none
+            "
+          />
 
-        {/* Bottom bar indicator */}
-        <div
-          className="
-            absolute bottom-3 left-1/2 -translate-x-1/2
-            w-[120px] h-[5px] rounded-full
-            bg-white/20
-          "
-        />
-      </div>
-    </Wrapper>
+          {/* Dynamic Island / Notch */}
+          <div
+            className="
+              absolute top-5 left-1/2 -translate-x-1/2 z-20
+              w-[100px] h-[28px] rounded-full
+              bg-[#0A0A0A]
+            "
+          />
+
+          {/* Screen area */}
+          <div
+            className="
+              relative rounded-[36px] overflow-hidden
+              bg-[--color-cream]
+              aspect-[9/19.5]
+            "
+          >
+            {screenshot ? (
+              <Image
+                src={screenshot}
+                alt="App screenshot"
+                fill
+                className="object-cover"
+                priority
+              />
+            ) : children ? (
+              children
+            ) : (
+              <BloomAppScreen />
+            )}
+          </div>
+
+          {/* Bottom bar indicator */}
+          <div
+            className="
+              absolute bottom-3 left-1/2 -translate-x-1/2
+              w-[120px] h-[5px] rounded-full
+              bg-white/20
+            "
+          />
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
