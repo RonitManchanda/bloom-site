@@ -11,26 +11,26 @@ import {
 const principles = [
   {
     number: "1.",
-    prefix: "Make it",
-    emphasis: "mutual.",
+    prefix: "Mutual",
+    emphasis: "Opt-in.",
     color: "--color-bloom",
   },
   {
     number: "2.",
-    prefix: "Make it",
-    emphasis: "relevant.",
+    prefix: "Goal-based",
+    emphasis: "Matching.",
     color: "--color-violet",
   },
   {
     number: "3.",
-    prefix: "Make it",
-    emphasis: "easy.",
+    prefix: "Guided",
+    emphasis: "Conversations.",
     color: "--color-sage",
   },
   {
     number: "4.",
-    prefix: "Make it",
-    emphasis: "safe.",
+    prefix: "Built-in",
+    emphasis: "Trust.",
     color: "--color-bloom-deep",
   },
 ];
@@ -44,10 +44,10 @@ export default function Principles() {
       <Container>
         {/* Section header */}
         <Reveal variant={fadeUp} className="text-center mb-16">
-          <p className="kicker mb-4">Built on proven principles</p>
+          <p className="kicker mb-4">Built for real growth</p>
           <h2 className="h2 text-[--color-ink]">
-            Bloom is the only app built on the <em>four laws</em> of meaningful
-            connection
+            Bloom is the only app built on the <em>four principles</em> of
+            meaningful connection
           </h2>
         </Reveal>
 

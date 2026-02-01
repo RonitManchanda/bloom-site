@@ -81,7 +81,7 @@ const CONFIG = {
   // Options: "easeInOut", "easeOut", "easeIn", "linear",
   //          "circOut", "backOut", "anticipate"
   //          or custom [x1, y1, x2, y2] bezier curve
-  SCREEN_EASING: [0.32, 0.72, 0, 1], // Custom smooth easing
+  SCREEN_EASING: [0.32, 0.72, 0, 1] as [number, number, number, number],
 
   // ─────────────────────────────────────────────────────────────────────────────
   // VISUAL EFFECTS
@@ -466,7 +466,6 @@ export default function Features() {
 
     const handleWheel = (e: WheelEvent) => {
       const phoneRect = phone.getBoundingClientRect();
-      const sectionRect = section.getBoundingClientRect();
 
       // Check if phone is visible on screen
       const phoneVisible =

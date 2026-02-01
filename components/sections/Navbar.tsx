@@ -74,7 +74,7 @@ export default function Navbar() {
                   Bloom
                 </span>
                 <span className="text-[10px] text-[--color-ink-muted] -mt-0.5 hidden sm:block">
-                  Mentorship, reimagined
+                  Mentorship, designed with intention
                 </span>
               </div>
             </a>

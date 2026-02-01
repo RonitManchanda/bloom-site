@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import VoiceflowWidget from "@/components/VoiceflowWidget";
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -48,13 +49,14 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className={dmSans.variable}>
       <body className="min-h-screen bg-[--color-cream] text-[--color-ink] antialiased">
         {children}
+        <VoiceflowWidget />
       </body>
     </html>
   );

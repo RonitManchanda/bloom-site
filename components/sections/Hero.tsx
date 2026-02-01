@@ -60,8 +60,8 @@ export default function Hero() {
               variants={fadeUp}
               className="lead mt-6 max-w-xl mx-auto lg:mx-0"
             >
-              Bloom helps you move forward with clarity and structure - without
-              pressure, awkward outreach, or performative networking.
+              Careers do not grow in isolation. Bloom connects you with people
+              who want to grow with you.
             </motion.p>
 
             {/* App store buttons placeholder */}
@@ -83,8 +83,8 @@ export default function Hero() {
               className="mt-10 flex flex-wrap gap-3 justify-center lg:justify-start"
             >
               <Badge variant="outline">Mutual opt-in</Badge>
-              <Badge variant="outline">LinkedIn verified</Badge>
-              <Badge variant="outline">Remote-first</Badge>
+              <Badge variant="outline">Verified Professionals</Badge>
+              <Badge variant="outline">Grow from anywhere</Badge>
             </motion.div>
           </StaggerContainer>
 

@@ -12,32 +12,32 @@ import {
 
 const sections = [
   {
-    kicker: "Why we're different",
-    title: "We know what really works",
+    kicker: "Why bloom works",
+    title: "Growth needs the right conditions",
     description:
       "We built Bloom on the proven principles of meaningful connection: make it mutual, make it relevant, make it easy, make it safe.",
     illustration: "handshake" as const,
   },
   {
-    title: "We meet you where you are",
+    title: "Every career grows differently",
     description:
       "Whether you're a student seeking guidance or a senior professional open to mentoring, Bloom matches you based on your goals, market, and availability—not random algorithms.",
     illustration: "compass" as const,
   },
   {
-    title: "We evolve as you evolve",
+    title: "Growth changes. Bloom keeps up.",
     description:
       "Switch between mentor and mentee roles anytime. Your profile, prompts, and matches adapt to your changing career journey.",
     illustration: "growth" as const,
   },
   {
-    title: "We're in it for the long-haul",
+    title: "Built for steady growth",
     description:
       "Bloom supports structured, time-bounded relationships—not vague networking. Set clear expectations and commitment levels from day one.",
     illustration: "clock" as const,
   },
   {
-    title: "We know trust matters most",
+    title: "Growth starts with trust",
     description:
       "LinkedIn verification, optional org email, and trust signals like response rate create a safe space. Mutual opt-in means no cold DMs, ever.",
     illustration: "shield" as const,
