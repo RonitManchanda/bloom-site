@@ -63,12 +63,20 @@ export default function Navbar() {
             <a href="#" className="flex items-center gap-3 group">
               <div
                 className="
-                  w-9 h-9 rounded-xl
-                  bg-gradient-to-br from-[--color-bloom] to-[--color-violet]
-                  shadow-lg shadow-[--color-bloom]/20
-                  transition-transform duration-300 group-hover:scale-105
-                "
-              />
+    w-9 h-9 rounded-xl
+    bg-gradient-to-br from-[--color-bloom] to-[--color-violet]
+    shadow-lg shadow-[--color-bloom]/20
+    overflow-hidden
+    transition-transform duration-300 group-hover:scale-105
+  "
+              >
+                <img
+                  src="bloom.jpg"
+                  alt="Bloom logo"
+                  className="w-full h-full object-contain scale-200"
+                />
+              </div>
+
               <div className="flex flex-col">
                 <span className="text-lg font-semibold text-[--color-ink] tracking-tight">
                   Bloom

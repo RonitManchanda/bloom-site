@@ -8,12 +8,38 @@ import { motion, Reveal, fadeUp } from "@/components/ui/Motion";
 export default function FinalCTA() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // In production, this would submit to your backend/form handler
-    if (email) {
+    if (!email) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          source: "final-cta",
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.ok) {
+        setError(data?.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+
       setSubmitted(true);
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -71,21 +97,27 @@ export default function FinalCTA() {
                     />
                     <button
                       type="submit"
+                      disabled={loading}
                       className="
-                        px-8 py-4 rounded-xl
-                        bg-[--color-ink] text-white text-sm font-medium
-                        hover:bg-[--color-ink-light]
-                        active:scale-[0.98]
-                        transition-all duration-300
-                        whitespace-nowrap
-                      "
+    px-8 py-4 rounded-xl
+    bg-[--color-ink] text-white text-sm font-medium
+    hover:bg-[--color-ink-light]
+    active:scale-[0.98]
+    transition-all duration-300
+    whitespace-nowrap
+    disabled:opacity-60 disabled:cursor-not-allowed
+  "
                     >
-                      Join waitlist
+                      {loading ? "Joining..." : "Join waitlist"}
                     </button>
                   </div>
+
                   <p className="mt-4 text-xs text-[--color-ink-muted]">
                     We'll notify you when Bloom launches. No spam, ever.
                   </p>
+                  {error && (
+                    <p className="mt-3 text-xs text-red-600">{error}</p>
+                  )}
                 </form>
               ) : (
                 <motion.div

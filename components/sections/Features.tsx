@@ -117,26 +117,26 @@ const features = [
     screen: "profile",
   },
   {
-    tag: "Relevance-first matching",
-    title: "Quality over quantity",
+    tag: "Community events",
+    title: "Learn together, grow together",
     description:
-      "Bloom matches by career market, role alignment, experience stage, and timezone—not random swipes. Proximity can enhance, but never limits access.",
+      "Join panels, workshops, and networking sessions hosted by experienced professionals. Connect with mentors and peers in interactive virtual events.",
     bullets: [
-      "Market/region required, city optional",
-      "Role and skills alignment",
-      "Timezone compatibility badges",
+      "Expert-led panels and workshops",
+      "Virtual and in-person options",
+      "Topic-based networking sessions",
     ],
-    screen: "matching",
+    screen: "events",
   },
   {
-    tag: "Guided conversations",
-    title: "Everyone needs a nudge",
+    tag: "Communities",
+    title: "Learn better together",
     description:
-      "Set up your first conversation with suggested openers that clarify expectations, boundaries, and cadence. No awkward cold starts.",
+      "Join focused groups where people ask real questions, share experience, and grow together around specific skills, careers, and goals.",
     bullets: [
-      "Pre-written conversation starters",
-      "Goal and boundary prompts",
-      "Cadence preferences built-in",
+      "Topic-based groups for skills and careers",
+      "Ask questions and learn from peers",
+      "Built-in discussions and shared resources",
     ],
     screen: "conversation",
   },
@@ -214,193 +214,299 @@ function ProfileScreen() {
   );
 }
 
-function MatchingScreen() {
+function EventsScreen() {
   return (
     <ScreenContent className="bg-[--color-cream] p-4 pt-14">
-      <div className="text-xs text-[--color-ink-muted] font-medium mb-2">
-        Matching
-      </div>
-      <div className="text-lg font-semibold text-[--color-ink] mb-4">
-        Your preferences
+      {/* Header */}
+      <div className="mb-4">
+        <div className="text-xl font-semibold text-[--color-ink] mb-1">
+          Upcoming Events
+        </div>
+        <div className="text-xs text-[--color-ink-muted]">
+          Join panels, workshops, and networking sessions
+        </div>
       </div>
 
-      <div className="space-y-4">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.1 }}
-          className="bg-white rounded-xl p-4 border border-[--color-border]"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-[--color-ink]">
-              Career Market
+      {/* Create Event Button */}
+      <motion.button
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-4 px-4 py-2 bg-[--color-ink] text-white text-xs font-medium rounded-lg"
+      >
+        + Create Event
+      </motion.button>
+
+      {/* Event Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-xl border border-[--color-border] overflow-hidden"
+      >
+        {/* Event Image */}
+        <div className="h-24 bg-gradient-to-br from-[--color-bloom-soft] to-[--color-violet-soft] relative">
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="flex -space-x-2">
+              {[0, 1, 2].map((i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3 + i * 0.1 }}
+                  className="w-10 h-10 rounded-full bg-[--color-cream] border-2 border-white"
+                  style={{
+                    background:
+                      i === 0 ? "#E8D5C4" : i === 1 ? "#D4C4B0" : "#C9B896",
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Event Details */}
+        <div className="p-3">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-[10px] font-semibold text-[--color-ink-muted] uppercase tracking-wide">
+              Panel
             </span>
-            <span className="text-xs text-[--color-bloom-deep] font-medium">
-              Required
+            <span className="text-[10px] text-[--color-ink-muted] uppercase tracking-wide">
+              Virtual
             </span>
           </div>
-          <div className="flex gap-2">
-            {["US", "Canada", "EU"].map((m, i) => (
-              <motion.span
-                key={m}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 + i * 0.05 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
-                  m === "US"
-                    ? "bg-[--color-ink] text-white"
-                    : "bg-[--color-cream-dark] text-[--color-ink-muted]"
-                }`}
+
+          <motion.h3
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35 }}
+            className="text-sm font-semibold text-[--color-ink] mb-1"
+          >
+            Breaking into FAANG: Panel Discussion
+          </motion.h3>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-[10px] text-[--color-ink-muted] mb-2 line-clamp-2"
+          >
+            Join us for an interactive panel with engineers from Google, Meta,
+            and Amazon.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+            className="text-[10px] text-[--color-ink-muted] mb-1"
+          >
+            Hosted by Sarah, Senior Software Engineer
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex items-center gap-2 text-[10px] text-[--color-ink] font-medium mb-2"
+          >
+            <span>Sat, Feb 7</span>
+            <span>•</span>
+            <span>8:22 PM</span>
+            <span>•</span>
+            <span>90 minutes</span>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.55 }}
+            className="text-[10px] text-[--color-ink-muted] mb-2"
+          >
+            67/100 attending
+          </motion.div>
+
+          {/* Tags */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="flex flex-wrap gap-1"
+          >
+            {["Interview prep", "FAANG", "Career strategy"].map((tag, i) => (
+              <span
+                key={tag}
+                className="px-2 py-0.5 bg-[--color-cream-dark] text-[--color-ink-muted] rounded text-[9px]"
               >
-                {m}
-              </motion.span>
+                {tag}
+              </span>
             ))}
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
+      </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl p-4 border border-[--color-border]"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-[--color-ink]">
-              Timezone Range
+      {/* Bottom Navigation Preview */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.7 }}
+        className="mt-4 flex justify-around py-2 border-t border-[--color-border]"
+      >
+        {["DISCOVER", "EVENTS", "GROUPS", "MATCHES", "PROFILE"].map(
+          (item, i) => (
+            <span
+              key={item}
+              className={`text-[8px] font-medium ${
+                item === "EVENTS"
+                  ? "text-[--color-ink]"
+                  : "text-[--color-ink-muted]"
+              }`}
+            >
+              {item}
             </span>
-            <span className="text-xs bg-[--color-sage]/10 text-[--color-sage] px-2 py-0.5 rounded-full">
-              ±3h preferred
-            </span>
-          </div>
-          <div className="h-2 bg-[--color-cream-dark] rounded-full overflow-hidden">
-            <motion.div
-              initial={{ width: 0 }}
-              animate={{ width: "66%" }}
-              transition={{ delay: 0.4, duration: 0.6, ease: "easeOut" }}
-              className="h-full bg-gradient-to-r from-[--color-bloom] to-[--color-violet] rounded-full"
-            />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl p-4 border border-[--color-border]"
-        >
-          <div className="text-sm font-medium text-[--color-ink] mb-2">
-            Role Alignment
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {["Product", "Design", "Engineering"].map((r, i) => (
-              <motion.span
-                key={r}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.4 + i * 0.05 }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-medium ${
-                  i === 0
-                    ? "bg-[--color-violet]/10 text-[--color-violet]"
-                    : "bg-[--color-cream-dark] text-[--color-ink-muted]"
-                }`}
-              >
-                {r}
-              </motion.span>
-            ))}
-          </div>
-        </motion.div>
-      </div>
+          ),
+        )}
+      </motion.div>
     </ScreenContent>
   );
 }
 
-function ConversationScreen() {
+function CommunitiesScreen() {
   return (
     <ScreenContent className="bg-[--color-cream] p-4 pt-14">
-      <div className="text-xs text-[--color-ink-muted] font-medium mb-2">
-        New Connection
-      </div>
-      <div className="text-lg font-semibold text-[--color-ink] mb-4">
-        Start your conversation
-      </div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="bg-white rounded-xl p-4 border border-[--color-border] mb-4"
-      >
-        <div className="flex items-center gap-3 mb-3">
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{
-              type: "spring",
-              stiffness: 400,
-              damping: 15,
-              delay: 0.1,
-            }}
-            className="w-10 h-10 rounded-full bg-gradient-to-br from-[--color-bloom-soft] to-[--color-violet-soft]"
-          />
-          <div>
-            <div className="text-sm font-medium text-[--color-ink]">
-              Alex K.
-            </div>
-            <div className="text-[10px] text-[--color-ink-muted]">
-              Matched today
-            </div>
-          </div>
+      {/* Header */}
+      <div className="mb-4">
+        <div className="text-xl font-semibold text-[--color-ink] mb-1">
+          Communities
         </div>
         <div className="text-xs text-[--color-ink-muted]">
-          Pick a conversation starter to break the ice:
+          Join groups to ask questions and share knowledge
+        </div>
+      </div>
+
+      {/* Search */}
+      <motion.div
+        initial={{ opacity: 0, y: 8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mb-4"
+      >
+        <div className="flex items-center gap-2 bg-white border border-[--color-border] rounded-full px-4 py-2">
+          <span className="text-[--color-ink-muted] text-xs">⌕</span>
+          <input
+            className="w-full bg-transparent outline-none text-xs text-[--color-ink] placeholder:text-[--color-ink-muted]"
+            placeholder="Search communities..."
+          />
         </div>
       </motion.div>
 
-      <div className="space-y-2">
-        {[
-          "What's one goal you're working toward?",
-          "What feedback style works best for you?",
-          "What does success look like in 6 weeks?",
-        ].map((prompt, i) => (
-          <motion.button
-            key={prompt}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 + i * 0.1 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className={`
-              w-full text-left p-3 rounded-xl text-xs
-              transition-colors duration-200
-              ${
-                i === 0
-                  ? "bg-[--color-bloom]/10 text-[--color-bloom-deep] border-2 border-[--color-bloom]/30"
-                  : "bg-white border border-[--color-border] text-[--color-ink] hover:bg-[--color-cream-dark]"
-              }
-            `}
-          >
-            {prompt}
-          </motion.button>
-        ))}
+      {/* Tabs */}
+      <div className="flex gap-6 mb-4">
+        <span className="text-sm font-semibold text-[--color-ink] border-b-2 border-[--color-ink] pb-1">
+          All Communities
+        </span>
+        <span className="text-sm text-[--color-ink-muted] pb-1">My Groups</span>
       </div>
 
-      <motion.button
-        initial={{ opacity: 0, y: 10 }}
+      {/* Community Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-[--color-bloom] to-[--color-violet] text-white text-sm font-medium"
+        transition={{ delay: 0.2 }}
+        className="bg-white rounded-xl border border-[--color-border] overflow-hidden"
       >
-        Send message
-      </motion.button>
+        {/* Image */}
+        <div className="h-28 bg-gradient-to-br from-[--color-bloom-soft] to-[--color-violet-soft] relative">
+          <div className="absolute top-2 right-2">
+            <span className="px-3 py-1 bg-[--color-cream] text-[10px] text-[--color-ink] rounded-full border border-[--color-border]">
+              Joined
+            </span>
+          </div>
+        </div>
+
+        {/* Details */}
+        <div className="p-3">
+          <div className="text-[10px] tracking-wide text-[--color-ink-muted] uppercase mb-1">
+            Technical Skills
+          </div>
+
+          <motion.h3
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-sm font-semibold text-[--color-ink] mb-1"
+          >
+            Software Engineering Interview Prep
+          </motion.h3>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35 }}
+            className="text-[10px] text-[--color-ink-muted] mb-2"
+          >
+            A community for discussing coding interviews, algorithm problems,
+            system design, and behavioral questions.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-[10px] text-[--color-ink-muted] mb-2"
+          >
+            1,247 members <span className="mx-1">•</span> 389 posts
+          </motion.div>
+
+          {/* Tags */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+            className="flex flex-wrap gap-1"
+          >
+            {["Interview prep", "Technical skills", "Algorithms", "FAANG"].map(
+              (tag) => (
+                <span
+                  key={tag}
+                  className="px-2 py-0.5 bg-[--color-cream-dark] text-[--color-ink-muted] rounded text-[9px]"
+                >
+                  {tag}
+                </span>
+              ),
+            )}
+          </motion.div>
+        </div>
+      </motion.div>
+
+      {/* Bottom Navigation Preview */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.6 }}
+        className="mt-4 flex justify-around py-2 border-t border-[--color-border]"
+      >
+        {["DISCOVER", "EVENTS", "GROUPS", "MATCHES", "PROFILE"].map((item) => (
+          <span
+            key={item}
+            className={`text-[8px] font-medium ${
+              item === "GROUPS"
+                ? "text-[--color-ink]"
+                : "text-[--color-ink-muted]"
+            }`}
+          >
+            {item}
+          </span>
+        ))}
+      </motion.div>
     </ScreenContent>
   );
 }
 
 const screens: Record<string, React.ReactNode> = {
   profile: <ProfileScreen />,
-  matching: <MatchingScreen />,
-  conversation: <ConversationScreen />,
+  events: <EventsScreen />,
+  conversation: <CommunitiesScreen />,
 };
 
 /*
